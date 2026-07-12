@@ -35,9 +35,15 @@ ENV/
 # Environment Variables
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.development
+.env.production
+.env.test
+
+# Optional local overrides
+.env.*
+
+# Keep the template file in Git
+!.env.example
 
 # OS
 .DS_Store

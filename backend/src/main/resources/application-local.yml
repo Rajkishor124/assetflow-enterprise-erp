@@ -1,13 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/assetflow
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
-
   jpa:
     show-sql: true
-
 logging:
   level:
     com.assetflow: DEBUG
