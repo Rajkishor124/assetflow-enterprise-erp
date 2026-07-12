@@ -26,6 +26,9 @@ interface KpiData {
   overdue: number;
 }
 
+import { assetApi } from '@/features/assets/api';
+import { useQuery } from '@tanstack/react-query';
+
 interface OverdueReturn {
   id: number;
   assetTag: string;
@@ -36,20 +39,32 @@ interface OverdueReturn {
 
 export default function DashboardPage() {
   const [currentUser, setCurrentUserVal] = useState<User | null>(null);
-  const [kpis] = useState<KpiData>({
-    available: 12,
-    allocated: 28,
-    maintenance: 3,
-    bookings: 5,
-    transfers: 2,
-    overdue: 4,
+
+  const { data: availableData } = useQuery({
+    queryKey: ['assets', 'AVAILABLE'],
+    queryFn: () => assetApi.getAll(0, 1, undefined, undefined, 'AVAILABLE'),
   });
 
-  const [overdueList] = useState<OverdueReturn[]>([
-    { id: 1, assetTag: 'AF-0024', assetName: 'MacBook Pro 16"', assignedTo: 'Priya Sharma', expectedDate: '2026-07-10' },
-    { id: 2, assetTag: 'AF-0112', assetName: 'iPad Air Gen 5', assignedTo: 'Rajesh Kumar', expectedDate: '2026-07-09' },
-    { id: 3, assetTag: 'AF-0098', assetName: 'Wacom Cintiq Pro', assignedTo: 'Neha Gupta', expectedDate: '2026-07-05' },
-  ]);
+  const { data: allocatedData } = useQuery({
+    queryKey: ['assets', 'ALLOCATED'],
+    queryFn: () => assetApi.getAll(0, 1, undefined, undefined, 'ALLOCATED'),
+  });
+
+  const { data: maintenanceData } = useQuery({
+    queryKey: ['assets', 'UNDER_MAINTENANCE'],
+    queryFn: () => assetApi.getAll(0, 1, undefined, undefined, 'UNDER_MAINTENANCE'),
+  });
+
+  const kpis = {
+    available: availableData?.data?.totalElements || 0,
+    allocated: allocatedData?.data?.totalElements || 0,
+    maintenance: maintenanceData?.data?.totalElements || 0,
+    bookings: 0,
+    transfers: 0,
+    overdue: 0,
+  };
+
+  const [overdueList] = useState<OverdueReturn[]>([]);
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -196,23 +211,27 @@ export default function DashboardPage() {
               </p>
 
               <div className="space-y-4">
-                {overdueList.map((item) => (
-                  <div key={item.id} className="p-4 bg-[#1b1215] border border-red-500/10 rounded-xl space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-white text-sm">{item.assetName}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400 uppercase">
-                        {item.assetTag}
-                      </span>
+                {overdueList.length === 0 ? (
+                  <div className="text-gray-500 text-sm italic">No overdue returns.</div>
+                ) : (
+                  overdueList.map((item) => (
+                    <div key={item.id} className="p-4 bg-[#1b1215] border border-red-500/10 rounded-xl space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold text-white text-sm">{item.assetName}</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400 uppercase">
+                          {item.assetTag}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Held by: {item.assignedTo}</span>
+                        <span className="flex items-center gap-1 text-red-400/90 font-medium">
+                          <Clock className="w-3.5 h-3.5" />
+                          Due {new Date(item.expectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-400">
-                      <span>Held by: {item.assignedTo}</span>
-                      <span className="flex items-center gap-1 text-red-400/90 font-medium">
-                        <Clock className="w-3.5 h-3.5" />
-                        Due {new Date(item.expectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
