@@ -23,7 +23,8 @@ export default function SignupPage() {
   } = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
     },
@@ -92,25 +93,49 @@ export default function SignupPage() {
 
         {/* Signup Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Name field */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
-              Full Name
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-              <input
-                {...register('name')}
-                type="text"
-                placeholder="John Doe"
-                className="w-full bg-[#14151a] border border-white/[0.08] focus:border-indigo-500/80 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-500 outline-none transition-all duration-200 text-sm focus:ring-1 focus:ring-indigo-500/20"
-              />
+          {/* First Name & Last Name Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* First Name field */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                First Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  {...register('firstName')}
+                  type="text"
+                  placeholder="John"
+                  className="w-full bg-[#14151a] border border-white/[0.08] focus:border-indigo-500/80 rounded-xl py-3 pl-9 pr-4 text-white placeholder-gray-500 outline-none transition-all duration-200 text-sm focus:ring-1 focus:ring-indigo-500/20"
+                />
+              </div>
+              {errors.firstName && (
+                <span className="text-xs text-red-400 font-medium pl-1">
+                  {errors.firstName.message}
+                </span>
+              )}
             </div>
-            {errors.name && (
-              <span className="text-xs text-red-400 font-medium pl-1">
-                {errors.name.message}
-              </span>
-            )}
+
+            {/* Last Name field */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                Last Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  {...register('lastName')}
+                  type="text"
+                  placeholder="Doe"
+                  className="w-full bg-[#14151a] border border-white/[0.08] focus:border-indigo-500/80 rounded-xl py-3 pl-9 pr-4 text-white placeholder-gray-500 outline-none transition-all duration-200 text-sm focus:ring-1 focus:ring-indigo-500/20"
+                />
+              </div>
+              {errors.lastName && (
+                <span className="text-xs text-red-400 font-medium pl-1">
+                  {errors.lastName.message}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Email field */}
