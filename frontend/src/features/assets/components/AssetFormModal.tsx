@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { assetApi, assetCategoryApi } from '../api';
 import { AssetRequest } from '../types';
 import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface Props {
   assetId: number | null;
@@ -64,8 +65,12 @@ export default function AssetFormModal({ assetId, onClose }: Props) {
       isEditing ? assetApi.update(assetId!, data) : assetApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assets'] });
+      toast.success(isEditing ? 'Asset updated successfully' : 'Asset created successfully');
       onClose();
     },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || err.message || 'An error occurred');
+    }
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -193,7 +198,7 @@ export default function AssetFormModal({ assetId, onClose }: Props) {
           </form>
           {mutation.isError && (
             <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-            {/* @ts-expect-error Axios error type */}
+            {/* @ts-ignore */}
             {mutation.error?.response?.data?.message || mutation.error.message || 'An error occurred'}
             </div>
           )}

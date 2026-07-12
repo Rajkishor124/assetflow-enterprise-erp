@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { userApi, departmentApi } from '../api';
 import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface Props {
   userId: number | null;
@@ -67,9 +68,11 @@ export default function UserFormModal({ userId, onClose }: Props) {
       }
 
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('User updated successfully');
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      toast.error(err.response?.data?.message || err.message || 'An error occurred');
     }
   };
 
