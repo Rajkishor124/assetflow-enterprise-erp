@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { assetApi } from '../api';
-import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Box } from 'lucide-react';
 import AssetFormModal from './AssetFormModal';
+import toast from 'react-hot-toast';
 
 export default function AssetList() {
   const [page, setPage] = useState(0);
@@ -23,6 +24,10 @@ export default function AssetList() {
     mutationFn: (id: number) => assetApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assets'] });
+      toast.success('Asset deleted successfully');
+    },
+    onError: () => {
+      toast.error('Failed to delete asset');
     },
   });
 
@@ -45,102 +50,131 @@ export default function AssetList() {
   const assets = data?.data?.content || [];
   const totalPages = data?.data?.totalPages || 1;
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="py-8 text-center text-red-500">Failed to load assets.</div>;
+  }
+
   return (
-    <div className="bg-white shadow rounded-lg p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Assets</h2>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div className="relative w-64">
+          <input
+            type="text"
+            placeholder="Search assets..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+          />
+          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
+        </div>
         <button
           onClick={handleCreate}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-blue-500/25"
         >
           <Plus size={18} /> Add Asset
         </button>
       </div>
 
-      <div className="mb-4 relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-        <input
-          type="text"
-          placeholder="Search assets..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      {isLoading ? (
-        <div className="py-8 text-center text-gray-500">Loading assets...</div>
-      ) : error ? (
-        <div className="py-8 text-center text-red-500">Failed to load assets.</div>
-      ) : assets.length === 0 ? (
-        <div className="py-8 text-center text-gray-500">No assets found.</div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b">
-                <th className="py-3 px-4 font-semibold text-gray-600">Tag</th>
-                <th className="py-3 px-4 font-semibold text-gray-600">Name</th>
-                <th className="py-3 px-4 font-semibold text-gray-600">Category</th>
-                <th className="py-3 px-4 font-semibold text-gray-600">Status</th>
-                <th className="py-3 px-4 text-right font-semibold text-gray-600">Actions</th>
+      <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
+        <table className="w-full text-left text-sm text-gray-400">
+          <thead className="bg-white/[0.02] text-xs uppercase font-medium">
+            <tr>
+              <th className="px-6 py-4">Asset</th>
+              <th className="px-6 py-4">Category</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/[0.06]">
+            {assets.map((asset) => (
+              <tr key={asset.id} className="hover:bg-white/[0.01] transition-colors">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <Box className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div>
+                      <div className="font-medium text-white">{asset.name}</div>
+                      <div className="text-xs text-gray-500">{asset.assetTag}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4">{asset.categoryName || '-'}</td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                      asset.lifecycleStatus === 'AVAILABLE'
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                        : asset.lifecycleStatus === 'ALLOCATED'
+                        ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                        : asset.lifecycleStatus === 'UNDER_MAINTENANCE'
+                        ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
+                        : 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
+                    }`}
+                  >
+                    {asset.lifecycleStatus}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <button
+                    onClick={() => handleEdit(asset.id)}
+                    className="text-gray-400 hover:text-blue-400 mx-2 transition-colors"
+                    title="Edit"
+                  >
+                    <Edit size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(asset.id)}
+                    className="text-gray-400 hover:text-red-400 transition-colors"
+                    title="Delete"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {assets.map((asset) => (
-                <tr key={asset.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4">{asset.assetTag}</td>
-                  <td className="py-3 px-4 font-medium text-gray-900">{asset.name}</td>
-                  <td className="py-3 px-4">{asset.categoryName || 'N/A'}</td>
-                  <td className="py-3 px-4">
-                    <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                      {asset.lifecycleStatus}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <button
-                      onClick={() => handleEdit(asset.id)}
-                      className="text-gray-500 hover:text-blue-600 mx-2 transition-colors"
-                      title="Edit"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(asset.id)}
-                      className="text-gray-500 hover:text-red-600 transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+            {assets.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                  No assets found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center mt-6">
-          <button
-            disabled={page === 0}
-            onClick={() => setPage(p => p - 1)}
-            className="px-4 py-2 border rounded text-gray-600 disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="text-gray-600">
-            Page {page + 1} of {totalPages}
-          </span>
-          <button
-            disabled={page >= totalPages - 1}
-            onClick={() => setPage(p => p + 1)}
-            className="px-4 py-2 border rounded text-gray-600 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-      )}
+        {totalPages > 1 && (
+          <div className="px-6 py-4 border-t border-white/[0.06] flex items-center justify-between">
+            <span className="text-sm text-gray-500">
+              Showing page {page + 1} of {totalPages}
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="px-3 py-1.5 text-sm bg-white/[0.02] border border-white/[0.06] rounded-lg text-white disabled:opacity-50 hover:bg-white/[0.06] transition-colors"
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="px-3 py-1.5 text-sm bg-white/[0.02] border border-white/[0.06] rounded-lg text-white disabled:opacity-50 hover:bg-white/[0.06] transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {isModalOpen && (
         <AssetFormModal

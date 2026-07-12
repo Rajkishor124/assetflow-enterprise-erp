@@ -86,15 +86,17 @@ export default function AssetFormModal({ assetId, onClose }: Props) {
     }));
   };
 
+  if (!categories) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#1a1a24] border border-white/[0.08] rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+        <div className="flex justify-between items-center p-6 border-b border-white/[0.08]">
+          <h2 className="text-xl font-bold text-white">
             {isEditing ? 'Edit Asset' : 'Add New Asset'}
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X size={24} />
+          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -102,112 +104,114 @@ export default function AssetFormModal({ assetId, onClose }: Props) {
           <form id="asset-form" onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Asset Tag *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Asset Tag *</label>
                 <input
                   required
                   name="assetTag"
                   value={formData.assetTag}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Name *</label>
                 <input
                   required
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Category *</label>
                 <select
                   required
                   name="categoryId"
                   value={formData.categoryId || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
                 >
                   <option value="" disabled>Select a category</option>
-                  {categories.map((cat) => (
+                  {categories.map((cat: { id: number; name: string }) => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Serial Number *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Serial Number *</label>
                 <input
                   required
                   name="serialNumber"
                   value={formData.serialNumber}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
                 <textarea
                   name="description"
                   value={formData.description || ''}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Manufacturer</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Manufacturer</label>
                 <input
                   name="manufacturer"
                   value={formData.manufacturer || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Model</label>
                 <input
                   name="model"
                   value={formData.model || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Purchase Date</label>
                 <input
                   type="date"
                   name="purchaseDate"
                   value={formData.purchaseDate || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
+                  style={{ colorScheme: 'dark' }}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Warranty Expiry</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Warranty Expiry</label>
                 <input
                   type="date"
                   name="warrantyExpiry"
                   value={formData.warrantyExpiry || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl text-white focus:outline-none focus:border-blue-500"
+                  style={{ colorScheme: 'dark' }}
                 />
               </div>
             </div>
           </form>
           {mutation.isError && (
-            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-            {mutation.error.message || 'An error occurred'}
+            <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl">
+              {mutation.error.message || 'An error occurred'}
             </div>
           )}
         </div>
 
-        <div className="p-6 border-t flex justify-end gap-3 bg-gray-50 rounded-b-lg">
+        <div className="p-6 border-t border-white/[0.08] flex justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
           >
             Cancel
           </button>
@@ -215,7 +219,7 @@ export default function AssetFormModal({ assetId, onClose }: Props) {
             type="submit"
             form="asset-form"
             disabled={mutation.isPending}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-xl transition-all disabled:opacity-50"
           >
             {mutation.isPending ? 'Saving...' : 'Save Asset'}
           </button>
