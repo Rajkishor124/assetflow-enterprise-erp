@@ -10,10 +10,13 @@ import com.assetflow.shared.enums.RecordStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.assetflow.organization.specification.UserSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.assetflow.shared.service.BaseQueryService;
+import com.assetflow.shared.specification.BaseSpecification;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +36,11 @@ class UserQueryServiceImpl extends BaseQueryService<User, Long, UserRepository> 
         return "User";
     }
 
-    public Page<UserSummaryResponse> findAllActive(Pageable pageable) {
-        return userRepository.findAll((root, query, cb) -> 
-            cb.equal(root.get("status"), RecordStatus.ACTIVE), pageable)
-            .map(userMapper::toSummaryResponse);
+    public Page<UserSummaryResponse> findAllActive(String role, Long deptId, Pageable pageable) {
+        Specification<User> spec = Specification.where(BaseSpecification.<User>isActive())
+                .and(UserSpecification.hasRole(role))
+                .and(UserSpecification.hasDepartment(deptId));
+        return userRepository.findAll(spec, pageable).map(userMapper::toSummaryResponse);
     }
 
     public UserDetailResponse findActiveById(Long id) {
