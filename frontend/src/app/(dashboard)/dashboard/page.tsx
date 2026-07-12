@@ -16,16 +16,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { getCurrentUser, User } from '../../../lib/auth';
-
-interface KpiData {
-  available: number;
-  allocated: number;
-  maintenance: number;
-  bookings: number;
-  transfers: number;
-  overdue: number;
-}
-
 import { assetApi } from '@/features/assets/api';
 import { useQuery } from '@tanstack/react-query';
 

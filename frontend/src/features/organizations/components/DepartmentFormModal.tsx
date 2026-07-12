@@ -46,8 +46,8 @@ export default function DepartmentFormModal({ deptId, onClose }: Props) {
       toast.success(isEditing ? 'Department updated successfully' : 'Department created successfully');
       onClose();
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || err.message || 'An error occurred');
+    onError: (err: Error) => {
+      toast.error(err.message || 'An error occurred');
     }
   });
 
@@ -101,8 +101,7 @@ export default function DepartmentFormModal({ deptId, onClose }: Props) {
           </form>
           {mutation.isError && (
             <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-              {/* @ts-ignore */}
-              {mutation.error?.response?.data?.message || mutation.error.message || 'An error occurred'}
+              {mutation.error.message || 'An error occurred'}
             </div>
           )}
         </div>

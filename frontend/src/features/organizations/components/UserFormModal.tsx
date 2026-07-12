@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { userApi, departmentApi } from '../api';
+import { UserRequest } from '../types';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -33,7 +34,6 @@ export default function UserFormModal({ userId, onClose }: Props) {
     if (userData?.data) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRole(userData.data.role?.name || 'EMPLOYEE');
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDepartmentId(userData.data.department?.id || null);
     }
   }, [userData]);
@@ -43,7 +43,7 @@ export default function UserFormModal({ userId, onClose }: Props) {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: any) => userApi.update(userId!, data),
+    mutationFn: (data: UserRequest) => userApi.update(userId!, data),
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,9 +70,10 @@ export default function UserFormModal({ userId, onClose }: Props) {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       toast.success('User updated successfully');
       onClose();
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.response?.data?.message || err.message || 'An error occurred');
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error);
+      toast.error(error.message || 'An error occurred');
     }
   };
 
