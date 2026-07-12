@@ -45,7 +45,7 @@ apiClient.interceptors.response.use(
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return apiClient(originalRequest);
           }
-        } catch (refreshError) {
+        } catch {
           // Refresh token failed or expired
         }
       }

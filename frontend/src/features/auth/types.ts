@@ -1,4 +1,3 @@
-import { User } from '../../lib/auth';
 
 export interface AuthResponse {
   success: boolean;
