@@ -46,10 +46,11 @@ export default function SignupPage() {
       } else {
         setErrorMsg(response.message || 'Registration failed. Please try again.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Record<string, unknown>;
       const errorMessage =
-        err.response?.data?.message ||
-        err.message ||
+        (error.response as Record<string, Record<string, string>>)?.data?.message ||
+        (error as Error).message ||
         'Network error. Please make sure the backend is running.';
       setErrorMsg(errorMessage);
     } finally {

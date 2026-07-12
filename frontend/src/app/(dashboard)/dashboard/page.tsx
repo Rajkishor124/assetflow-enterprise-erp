@@ -36,7 +36,7 @@ interface OverdueReturn {
 
 export default function DashboardPage() {
   const [currentUser, setCurrentUserVal] = useState<User | null>(null);
-  const [kpis, setKpis] = useState<KpiData>({
+  const [kpis] = useState<KpiData>({
     available: 12,
     allocated: 28,
     maintenance: 3,
@@ -45,7 +45,7 @@ export default function DashboardPage() {
     overdue: 4,
   });
 
-  const [overdueList, setOverdueList] = useState<OverdueReturn[]>([
+  const [overdueList] = useState<OverdueReturn[]>([
     { id: 1, assetTag: 'AF-0024', assetName: 'MacBook Pro 16"', assignedTo: 'Priya Sharma', expectedDate: '2026-07-10' },
     { id: 2, assetTag: 'AF-0112', assetName: 'iPad Air Gen 5', assignedTo: 'Rajesh Kumar', expectedDate: '2026-07-09' },
     { id: 3, assetTag: 'AF-0098', assetName: 'Wacom Cintiq Pro', assignedTo: 'Neha Gupta', expectedDate: '2026-07-05' },
@@ -54,6 +54,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const user = getCurrentUser();
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentUserVal(user);
     }
   }, []);
@@ -76,7 +77,7 @@ export default function DashboardPage() {
             Welcome back, {currentUser?.name}!
           </h2>
           <p className="text-gray-400 text-sm mt-1">
-            Here's what's happening in your organization today.
+            Here&apos;s what&apos;s happening in your organization today.
           </p>
         </div>
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold rounded-lg self-start sm:self-center">

@@ -39,7 +39,7 @@ export default function LoginPage() {
         setRefreshToken(response.data.refreshToken);
         
         // Decode JWT token to extract user info (since backend doesn't return user object)
-        let decodedUser: any = null;
+        let decodedUser: Record<string, unknown> | null = null;
         try {
           const base64Url = accessToken.split('.')[1];
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -82,10 +82,11 @@ export default function LoginPage() {
       } else {
         setErrorMsg(response.message || 'Login failed. Please check credentials.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Record<string, unknown>;
       const errorMessage =
-        err.response?.data?.message ||
-        err.message ||
+        (error.response as Record<string, Record<string, string>>)?.data?.message ||
+        (error as Error).message ||
         'Network error. Please make sure the backend is running.';
       setErrorMsg(errorMessage);
     } finally {
@@ -198,7 +199,7 @@ export default function LoginPage() {
 
         {/* Footer Link */}
         <div className="mt-8 text-center text-sm text-gray-400">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link
             href="/signup"
             className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"

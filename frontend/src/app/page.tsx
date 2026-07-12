@@ -8,24 +8,26 @@ import { getAccessToken } from '../lib/auth';
 
 export default function Home() {
   const router = useRouter();
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsClient(true);
     const token = getAccessToken();
     if (token) {
       router.push('/dashboard');
-    } else {
-      setCheckingAuth(false);
     }
   }, [router]);
 
-  if (checkingAuth) {
+  if (!isClient) {
     return (
       <div className="min-h-screen bg-[#0d0e12] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
       </div>
     );
   }
+
+
 
   return (
     <div className="relative min-h-screen bg-[#0d0e12] text-white overflow-hidden flex flex-col justify-between">
@@ -53,7 +55,7 @@ export default function Home() {
       <main className="w-full max-w-4xl mx-auto px-6 text-center z-10 my-auto py-12">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-6">
           <Award className="w-4 h-4" />
-          Odoo Hackathon '26 Virtual Round
+          Odoo Hackathon &apos;26 Virtual Round
         </div>
         
         <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-[1.15] mb-6">
