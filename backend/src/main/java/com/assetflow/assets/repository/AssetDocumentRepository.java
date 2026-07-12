@@ -1,9 +1,12 @@
 package com.assetflow.assets.repository;
 
 import com.assetflow.assets.entity.AssetDocument;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.assetflow.shared.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface AssetDocumentRepository extends JpaRepository<AssetDocument, Long> {}
+import java.util.List;
 
+@Repository
+public interface AssetDocumentRepository extends BaseRepository<AssetDocument, Long> {
+    List<AssetDocument> findByAssetId(Long assetId);
+}

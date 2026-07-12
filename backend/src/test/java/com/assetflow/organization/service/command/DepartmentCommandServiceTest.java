@@ -30,7 +30,7 @@ class DepartmentCommandServiceTest {
     private DepartmentHierarchyValidator hierarchyValidator;
 
     @InjectMocks
-    private DepartmentCommandService departmentCommandService;
+    private DepartmentCommandServiceImpl departmentCommandService;
 
     @Test
     void createDepartment_ShouldThrowDuplicateResourceException_WhenNameExistsWithoutParent() {

@@ -6,6 +6,7 @@ public enum AssetStatus {
     RESERVED,
     UNDER_MAINTENANCE,
     RETIRED,
-    DISPOSED
+    DISPOSED,
+    LOST
 }
 
