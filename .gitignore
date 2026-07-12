@@ -38,7 +38,12 @@ ENV/
 .env.development
 .env.production
 .env.test
-*.env
+
+# Optional local overrides
+.env.*
+
+# Keep the template file in Git
+!.env.example
 
 # OS
 .DS_Store
