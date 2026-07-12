@@ -1,6 +1,6 @@
-package com.example.demo.exception;
+package com.ovidea.assetflow.exception;
 
-import com.example.demo.dto.ErrorResponse;
+import com.ovidea.assetflow.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

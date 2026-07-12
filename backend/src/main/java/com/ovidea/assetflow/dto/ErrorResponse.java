@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.ovidea.assetflow.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
