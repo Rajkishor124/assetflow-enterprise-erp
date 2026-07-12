@@ -28,9 +28,27 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), "BAD_REQUEST", request.getRequestURI());
     }
 
+    @ExceptionHandler(AssetFlowException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleAssetFlowException(AssetFlowException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), "BAD_REQUEST", request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvalidStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidStateException(InvalidStateException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), "INVALID_STATE", request.getRequestURI());
+    }
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(NotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), "NOT_FOUND", request.getRequestURI());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
         return buildErrorResponse(ex.getMessage(), "NOT_FOUND", request.getRequestURI());
     }
 
@@ -40,10 +58,22 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), "CONFLICT", request.getRequestURI());
     }
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateResourceException(DuplicateResourceException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), "CONFLICT", request.getRequestURI());
+    }
+
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleUnauthorizedException(UnauthorizedException ex, HttpServletRequest request) {
         return buildErrorResponse(ex.getMessage(), "UNAUTHORIZED", request.getRequestURI());
+    }
+
+    @ExceptionHandler(UnauthorizedActionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleUnauthorizedActionException(UnauthorizedActionException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), "FORBIDDEN", request.getRequestURI());
     }
 
     @ExceptionHandler(AccessDeniedException.class)

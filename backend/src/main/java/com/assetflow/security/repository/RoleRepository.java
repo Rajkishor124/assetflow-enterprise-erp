@@ -6,8 +6,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+import com.assetflow.shared.enums.RecordStatus;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
 
     Optional<Role> findByName(String name);
+
+    Optional<Role> findByIdAndStatus(Long id, RecordStatus status);
 }
