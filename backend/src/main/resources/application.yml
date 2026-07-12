@@ -37,5 +37,7 @@ assetflow:
   security:
     jwt:
       secret: ${JWT_SECRET:change-me-in-production-12345678901234567890123456789012}
-      expiration-ms: 900000 # 15 minutes
+      access-expiration-ms: 900000   # 15 minutes
       refresh-expiration-ms: 604800000 # 7 days
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}

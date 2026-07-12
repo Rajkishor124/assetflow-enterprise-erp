@@ -1,5 +1,6 @@
 package com.assetflow.core.config;
 
+import com.assetflow.core.service.CurrentUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -10,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class JpaAuditingConfig {
 
     @Bean
-    public AuditorAware<Long> auditorProvider() {
-        return new AuditorAwareImpl();
+    public AuditorAware<Long> auditorProvider(CurrentUserService currentUserService) {
+        return currentUserService;
     }
 }
