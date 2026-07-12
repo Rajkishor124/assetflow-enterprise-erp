@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,6 +29,7 @@ public class AuthFlowIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql(scripts = "/seed_roles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void testAuthenticationFlow() throws Exception {
         // 1. Signup
         SignupRequestDTO signup = new SignupRequestDTO();
