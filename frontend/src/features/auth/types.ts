@@ -6,14 +6,12 @@ export interface AuthResponse {
   data: {
     accessToken: string;
     refreshToken: string;
-    user: User;
   };
-  timestamp: string;
 }
 
 export interface SignupResponse {
   success: boolean;
   message: string;
-  data: User;
+  data: string | null;
   timestamp: string;
 }
