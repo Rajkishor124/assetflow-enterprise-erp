@@ -61,10 +61,8 @@ export const userApi = {
     return response.data;
   },
 
-  updateRole: async (id: number, roleId: number): Promise<ApiResponse<UserDetailResponse>> => {
-    const response = await apiClient.patch<ApiResponse<UserDetailResponse>>(`/users/${id}/role`, null, {
-      params: { roleId },
-    });
+  updateRole: async (id: number, data: { role: string }): Promise<ApiResponse<UserDetailResponse>> => {
+    const response = await apiClient.put<ApiResponse<UserDetailResponse>>(`/users/${id}/role`, data);
     return response.data;
   },
   

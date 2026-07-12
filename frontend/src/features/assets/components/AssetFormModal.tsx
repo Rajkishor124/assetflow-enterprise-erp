@@ -193,7 +193,7 @@ export default function AssetFormModal({ assetId, onClose }: Props) {
           </form>
           {mutation.isError && (
             <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-            {/* @ts-expect-error */}
+            {/* @ts-expect-error Axios error type */}
             {mutation.error?.response?.data?.message || mutation.error.message || 'An error occurred'}
             </div>
           )}
