@@ -1,0 +1,12 @@
+CREATE TABLE refresh_tokens (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id),
+    token VARCHAR(255) NOT NULL UNIQUE,
+    expiry_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_by BIGINT,
+    updated_by BIGINT,
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    version BIGINT DEFAULT 0
+);
