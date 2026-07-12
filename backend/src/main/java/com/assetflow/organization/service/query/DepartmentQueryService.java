@@ -13,13 +13,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.assetflow.shared.service.BaseQueryService;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class DepartmentQueryService {
+public class DepartmentQueryService extends BaseQueryService<Department, Long, DepartmentRepository> {
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
+
+    @Override
+    protected DepartmentRepository getRepository() {
+        return departmentRepository;
+    }
+
+    @Override
+    protected String getResourceName() {
+        return "Department";
+    }
 
     public Page<DepartmentSummaryResponse> findAllActive(Pageable pageable) {
         return departmentRepository.findAll((root, query, cb) -> 
@@ -28,12 +40,7 @@ public class DepartmentQueryService {
     }
 
     public DepartmentDetailResponse findActiveById(Long id) {
-        Department dept = getActiveEntityById(id);
+        Department dept = findActiveEntityById(id);
         return departmentMapper.toDetailResponse(dept);
-    }
-
-    public Department getActiveEntityById(Long id) {
-        return departmentRepository.findByIdAndStatus(id, RecordStatus.ACTIVE)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
     }
 }

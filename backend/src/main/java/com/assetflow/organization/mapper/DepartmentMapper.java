@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
+import com.assetflow.shared.mapper.CentralMapperConfig;
+
+@Mapper(config = CentralMapperConfig.class)
 public interface DepartmentMapper {
 
     @Mapping(target = "parentId", source = "parent.id")

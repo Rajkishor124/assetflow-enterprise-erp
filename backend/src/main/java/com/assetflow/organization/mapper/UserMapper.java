@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", uses = {DepartmentMapper.class, RoleMapper.class}, unmappedTargetPolicy = ReportingPolicy.ERROR)
+import com.assetflow.shared.mapper.CentralMapperConfig;
+
+@Mapper(config = CentralMapperConfig.class, uses = {DepartmentMapper.class, RoleMapper.class})
 public interface UserMapper {
 
     @Mapping(target = "departmentName", source = "department.name")

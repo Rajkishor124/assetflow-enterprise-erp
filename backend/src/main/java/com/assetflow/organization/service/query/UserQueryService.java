@@ -13,13 +13,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.assetflow.shared.service.BaseQueryService;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserQueryService {
+public class UserQueryService extends BaseQueryService<User, Long, UserRepository> {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    @Override
+    protected UserRepository getRepository() {
+        return userRepository;
+    }
+
+    @Override
+    protected String getResourceName() {
+        return "User";
+    }
 
     public Page<UserSummaryResponse> findAllActive(Pageable pageable) {
         return userRepository.findAll((root, query, cb) -> 
@@ -28,12 +40,7 @@ public class UserQueryService {
     }
 
     public UserDetailResponse findActiveById(Long id) {
-        User user = getActiveEntityById(id);
+        User user = findActiveEntityById(id);
         return userMapper.toDetailResponse(user);
-    }
-
-    public User getActiveEntityById(Long id) {
-        return userRepository.findByIdAndStatus(id, RecordStatus.ACTIVE)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
 }

@@ -6,11 +6,12 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.assetflow.shared.enums.RecordStatus;
+import com.assetflow.shared.repository.BaseRepository;
 
 import java.util.Optional;
 
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department, Long>, JpaSpecificationExecutor<Department> {
+public interface DepartmentRepository extends BaseRepository<Department, Long> {
 
     Optional<Department> findByIdAndStatus(Long id, RecordStatus status);
 

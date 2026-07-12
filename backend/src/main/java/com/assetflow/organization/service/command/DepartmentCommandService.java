@@ -13,15 +13,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.assetflow.shared.service.BaseCommandService;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class DepartmentCommandService {
+public class DepartmentCommandService extends BaseCommandService<Department, Long, DepartmentRepository> {
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
     private final DepartmentQueryService departmentQueryService;
     private final DepartmentHierarchyValidator hierarchyValidator;
+
+    @Override
+    protected DepartmentRepository getRepository() {
+        return departmentRepository;
+    }
+
+    @Override
+    protected String getResourceName() {
+        return "Department";
+    }
 
     public DepartmentDetailResponse createDepartment(DepartmentRequest request) {
         if (request.getParentId() != null) {
@@ -37,7 +49,7 @@ public class DepartmentCommandService {
         Department department = departmentMapper.toEntity(request);
 
         if (request.getParentId() != null) {
-            Department parent = departmentQueryService.getActiveEntityById(request.getParentId());
+            Department parent = departmentQueryService.findActiveEntityById(request.getParentId());
             department.setParent(parent);
         }
 
@@ -46,7 +58,7 @@ public class DepartmentCommandService {
     }
 
     public DepartmentDetailResponse updateDepartment(Long id, DepartmentRequest request) {
-        Department department = departmentQueryService.getActiveEntityById(id);
+        Department department = departmentQueryService.findActiveEntityById(id);
 
         if (request.getParentId() != null) {
             hierarchyValidator.validateNotSelfParent(id, request.getParentId());
@@ -55,7 +67,7 @@ public class DepartmentCommandService {
         departmentMapper.updateEntityFromRequest(request, department);
 
         if (request.getParentId() != null) {
-            Department parent = departmentQueryService.getActiveEntityById(request.getParentId());
+            Department parent = departmentQueryService.findActiveEntityById(request.getParentId());
             department.setParent(parent);
         } else {
             department.setParent(null);
@@ -66,7 +78,7 @@ public class DepartmentCommandService {
     }
 
     public void deleteDepartment(Long id) {
-        Department department = departmentQueryService.getActiveEntityById(id);
+        Department department = departmentQueryService.findActiveEntityById(id);
         department.setStatus(RecordStatus.INACTIVE);
         departmentRepository.save(department);
     }

@@ -3,10 +3,10 @@ package com.assetflow.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class ConflictException extends AssetFlowException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class ValidationException extends AssetFlowException {
     
-    public ConflictException(String message) {
+    public ValidationException(String message) {
         super(message);
     }
 }

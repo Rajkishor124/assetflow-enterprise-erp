@@ -5,7 +5,9 @@ import com.assetflow.security.entity.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
+import com.assetflow.shared.mapper.CentralMapperConfig;
+
+@Mapper(config = CentralMapperConfig.class)
 public interface RoleMapper {
 
     RoleSummaryResponse toSummaryResponse(Role role);

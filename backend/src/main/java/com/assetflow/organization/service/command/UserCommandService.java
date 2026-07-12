@@ -17,10 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.assetflow.shared.service.BaseCommandService;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserCommandService {
+public class UserCommandService extends BaseCommandService<User, Long, UserRepository> {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -28,6 +30,16 @@ public class UserCommandService {
     private final DepartmentQueryService departmentQueryService;
     private final RoleQueryService roleQueryService;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    protected UserRepository getRepository() {
+        return userRepository;
+    }
+
+    @Override
+    protected String getResourceName() {
+        return "User";
+    }
 
     public UserDetailResponse createUser(UserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -38,11 +50,11 @@ public class UserCommandService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
         if (request.getDepartmentId() != null) {
-            Department department = departmentQueryService.getActiveEntityById(request.getDepartmentId());
+            Department department = departmentQueryService.findActiveEntityById(request.getDepartmentId());
             user.setDepartment(department);
         }
 
-        Role role = roleQueryService.getActiveEntityById(request.getRoleId());
+        Role role = roleQueryService.findActiveEntityById(request.getRoleId());
         user.setRole(role);
 
         User saved = userRepository.save(user);
@@ -50,7 +62,7 @@ public class UserCommandService {
     }
 
     public UserDetailResponse updateUser(Long id, UserRequest request) {
-        User user = userQueryService.getActiveEntityById(id);
+        User user = userQueryService.findActiveEntityById(id);
 
         if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateResourceException("User", "email", request.getEmail());
@@ -63,13 +75,13 @@ public class UserCommandService {
         }
 
         if (request.getDepartmentId() != null) {
-            Department department = departmentQueryService.getActiveEntityById(request.getDepartmentId());
+            Department department = departmentQueryService.findActiveEntityById(request.getDepartmentId());
             user.setDepartment(department);
         } else {
             user.setDepartment(null);
         }
 
-        Role role = roleQueryService.getActiveEntityById(request.getRoleId());
+        Role role = roleQueryService.findActiveEntityById(request.getRoleId());
         user.setRole(role);
 
         User saved = userRepository.save(user);
@@ -77,7 +89,7 @@ public class UserCommandService {
     }
 
     public void deleteUser(Long id) {
-        User user = userQueryService.getActiveEntityById(id);
+        User user = userQueryService.findActiveEntityById(id);
         user.setStatus(RecordStatus.INACTIVE);
         userRepository.save(user);
     }

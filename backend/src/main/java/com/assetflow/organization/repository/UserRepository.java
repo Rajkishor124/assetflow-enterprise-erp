@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 import com.assetflow.shared.enums.RecordStatus;
+import com.assetflow.shared.repository.BaseRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends BaseRepository<User, Long> {
 
     @Query("SELECT u FROM User u JOIN FETCH u.role WHERE u.email = :email")
     Optional<User> findByEmail(@Param("email") String email);

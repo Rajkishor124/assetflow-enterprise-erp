@@ -12,22 +12,29 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.assetflow.shared.service.BaseQueryService;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class RoleQueryService {
+public class RoleQueryService extends BaseQueryService<Role, Long, RoleRepository> {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+
+    @Override
+    protected RoleRepository getRepository() {
+        return roleRepository;
+    }
+
+    @Override
+    protected String getResourceName() {
+        return "Role";
+    }
 
     public Page<RoleSummaryResponse> findAllActive(Pageable pageable) {
         return roleRepository.findAll((root, query, cb) -> 
             cb.equal(root.get("status"), RecordStatus.ACTIVE), pageable)
             .map(roleMapper::toSummaryResponse);
-    }
-
-    public Role getActiveEntityById(Long id) {
-        return roleRepository.findByIdAndStatus(id, RecordStatus.ACTIVE)
-                .orElseThrow(() -> new ResourceNotFoundException("Role", "id", id));
     }
 }

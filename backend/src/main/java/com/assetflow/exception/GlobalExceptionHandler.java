@@ -64,6 +64,18 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), "CONFLICT", request.getRequestURI());
     }
 
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(ValidationException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), "VALIDATION_ERROR", request.getRequestURI());
+    }
+
+    @ExceptionHandler(BusinessRuleViolationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse handleBusinessRuleViolationException(BusinessRuleViolationException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), "UNPROCESSABLE_ENTITY", request.getRequestURI());
+    }
+
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleUnauthorizedException(UnauthorizedException ex, HttpServletRequest request) {
