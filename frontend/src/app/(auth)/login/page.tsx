@@ -34,9 +34,48 @@ export default function LoginPage() {
     try {
       const response = await authApi.login(data);
       if (response.success && response.data) {
-        setAccessToken(response.data.accessToken);
+        const accessToken = response.data.accessToken;
+        setAccessToken(accessToken);
         setRefreshToken(response.data.refreshToken);
-        setCurrentUser(response.data.user);
+        
+        // Decode JWT token to extract user info (since backend doesn't return user object)
+        let decodedUser: any = null;
+        try {
+          const base64Url = accessToken.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(
+            window.atob(base64)
+              .split('')
+              .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+              .join('')
+          );
+          const claims = JSON.parse(jsonPayload);
+          
+          // Generate a clean display name from email (e.g. rafiaminhaj423 -> Rafia Minhaj)
+          const emailParts = claims.sub.split('@')[0];
+          let displayName = emailParts.replace(/[0-9]/g, '');
+          displayName = displayName.split(/[._-]/).map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+          if (!displayName) displayName = 'User';
+
+          decodedUser = {
+            id: claims.userId,
+            name: displayName,
+            email: claims.sub,
+            role: claims.role || 'EMPLOYEE',
+            status: 'ACTIVE'
+          };
+        } catch (e) {
+          console.error("JWT decoding failed", e);
+          decodedUser = {
+            id: 1,
+            name: 'User',
+            email: data.email,
+            role: 'EMPLOYEE',
+            status: 'ACTIVE'
+          };
+        }
+
+        setCurrentUser(decodedUser);
         
         // Redirect to dashboard on successful login
         router.push('/dashboard');
