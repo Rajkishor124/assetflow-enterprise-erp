@@ -13,7 +13,7 @@ export const authApi = {
     return response.data;
   },
 
-  logout: async (refreshToken: string): Promise<any> => {
+  logout: async (refreshToken: string): Promise<void> => {
     const response = await apiClient.post('/auth/logout', { refreshToken });
     return response.data;
   },

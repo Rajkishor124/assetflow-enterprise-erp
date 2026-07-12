@@ -23,7 +23,7 @@ import { getCurrentUser, clearAuth, User } from '../../lib/auth';
 interface SidebarItem {
   name: string;
   href: string;
-  icon: any;
+  icon: React.ElementType;
   allowedRoles: string[];
 }
 
@@ -77,13 +77,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const [currentUser, setCurrentUserVal] = useState<User | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(3); // Mock notifications count
+  const notificationCount = 3; // Mock notifications count
 
   useEffect(() => {
     const user = getCurrentUser();
     if (!user) {
       router.push('/login');
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentUserVal(user);
     }
   }, [router]);

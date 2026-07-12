@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Shield, Key, Mail, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { loginSchema, LoginInput } from '../../../lib/validators';
 import { authApi } from '../../../features/auth/api';
-import { setAccessToken, setRefreshToken, setCurrentUser } from '../../../lib/auth';
+import { setAccessToken, setRefreshToken, setCurrentUser, User } from '../../../lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function LoginPage() {
         setRefreshToken(response.data.refreshToken);
         
         // Decode JWT token to extract user info (since backend doesn't return user object)
-        let decodedUser: any = null;
+        let decodedUser: User | null = null;
         try {
           const base64Url = accessToken.split('.')[1];
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -82,10 +82,11 @@ export default function LoginPage() {
       } else {
         setErrorMsg(response.message || 'Login failed. Please check credentials.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }, message?: string };
       const errorMessage =
-        err.response?.data?.message ||
-        err.message ||
+        error.response?.data?.message ||
+        error.message ||
         'Network error. Please make sure the backend is running.';
       setErrorMsg(errorMessage);
     } finally {
@@ -198,7 +199,7 @@ export default function LoginPage() {
 
         {/* Footer Link */}
         <div className="mt-8 text-center text-sm text-gray-400">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link
             href="/signup"
             className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
