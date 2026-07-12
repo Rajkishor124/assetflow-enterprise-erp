@@ -1,6 +1,6 @@
-# AssetFlow Enterprise ERP (Backend)
+# AssetFlow Enterprise ERP (Odoo Hackathon 2026 Project)
 
-Welcome to the backend component of AssetFlow, a modern Enterprise ERP system.
+Welcome to AssetFlow, a modern Enterprise ERP system developed for the **Odoo Hackathon 2026**. This repository contains both the backend and frontend components.
 
 ## Prerequisites
 
@@ -8,14 +8,21 @@ Ensure you have the following installed on your system before proceeding:
 - **Java:** JDK 21
 - **Maven:** 3.8+ (or use the included wrapper `mvnw`)
 - **PostgreSQL:** 14 or newer
+- **Node.js:** 18+ (for frontend)
+- **npm:** (for frontend)
 
-## Local Setup Instructions
+---
+
+## Backend Setup Instructions
+
+The backend is built with Spring Boot and uses PostgreSQL for the database.
 
 ### 1. Environment Configuration
 
-The application is fully configurable via environment variables. Copy the provided template to create your local `.env` file:
+The application is fully configurable via environment variables. Navigate to the backend directory and copy the provided template to create your local `.env` file:
 
 ```bash
+cd backend
 cp .env.example .env
 ```
 
@@ -67,3 +74,33 @@ Once the application has started successfully, you can view and interact with th
 - **OpenAPI JSON:** [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
 You can use the `/api/v1/auth/signup` and `/api/v1/auth/login` endpoints directly from Swagger to test authentication.
+
+---
+
+## Frontend Setup Instructions
+
+The frontend is built using Next.js and React.
+
+### 1. Install Dependencies
+
+Navigate to the frontend directory and install the required dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+### 2. Configure Environment
+
+Ensure that the frontend can communicate with the backend API. If you need to set a custom backend URL, you can usually do so in an environment file (e.g., `.env.local`). By default, the application may assume the backend is at `http://localhost:8080`.
+
+### 3. Start the Development Server
+
+To start the frontend application:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend will typically be accessible at [http://localhost:3000](http://localhost:3000).
