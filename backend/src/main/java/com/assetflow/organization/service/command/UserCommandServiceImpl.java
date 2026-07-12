@@ -30,6 +30,7 @@ class UserCommandServiceImpl extends BaseCommandService<User, Long, UserReposito
     private final DepartmentQueryService departmentQueryService;
     private final RoleQueryService roleQueryService;
     private final PasswordEncoder passwordEncoder;
+    private final com.assetflow.security.repository.RoleRepository roleRepository;
 
     @Override
     protected UserRepository getRepository() {
@@ -84,6 +85,16 @@ class UserCommandServiceImpl extends BaseCommandService<User, Long, UserReposito
         Role role = roleQueryService.findActiveEntityById(request.getRoleId());
         user.setRole(role);
 
+        User saved = userRepository.save(user);
+        return userMapper.toDetailResponse(saved);
+    }
+
+    @Override
+    public UserDetailResponse updateUserRole(Long id, String roleName) {
+        User user = userQueryService.findActiveEntityById(id);
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new com.assetflow.exception.ResourceNotFoundException("Role", "name", roleName));
+        user.setRole(role);
         User saved = userRepository.save(user);
         return userMapper.toDetailResponse(saved);
     }

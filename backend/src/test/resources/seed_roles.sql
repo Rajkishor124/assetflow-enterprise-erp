@@ -1,3 +1,6 @@
+DELETE FROM users;
+DELETE FROM roles;
+
 INSERT INTO roles (name, description, created_at, updated_at, status, version)
 VALUES
     ('ADMIN', 'Full system control', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 0),

@@ -6,5 +6,6 @@ import com.assetflow.organization.dto.request.UserRequest;
 public interface UserCommandService {
     UserDetailResponse createUser(UserRequest request);
     UserDetailResponse updateUser(Long id, UserRequest request);
+    UserDetailResponse updateUserRole(Long id, String roleName);
     void deleteUser(Long id);
 }
