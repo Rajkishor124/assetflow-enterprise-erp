@@ -47,10 +47,10 @@ export default function SignupPage() {
         setErrorMsg(response.message || 'Registration failed. Please try again.');
       }
     } catch (err: unknown) {
-      const error = err as any;
+      const error = err as { response?: { data?: { message?: string } }, message?: string };
       const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
+        error.response?.data?.message ||
+        error.message ||
         'Network error. Please make sure the backend is running.';
       setErrorMsg(errorMessage);
     } finally {
